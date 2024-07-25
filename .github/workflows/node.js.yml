@@ -30,6 +30,10 @@ jobs:
         if: ${{ steps.test.outcome == 'success' }}
         run: npm run build -- --prod
 
+      - name: List build output
+        if: ${{ steps.test.outcome == 'success' }}
+        run: ls -l dist/
+
       - name: Install AWS CLI
         run: |
           sudo apt-get update
@@ -43,4 +47,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          echo "Syncing files to S3..."
           aws s3 sync dist/ s3://$AWS_S3_BUCKET --delete
+          echo "Files synced to S3 successfully."
