@@ -1,0 +1,29 @@
+- name: Configure server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure dpkg is configured
+      command: dpkg --configure -a
+      ignore_errors: yes
+
+    - name: Update APT package manager repositories and cache
+      apt:
+        update_cache: yes
+
+    - name: Create an HTML file in the Nginx web root
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Welcome to Nginx</title>
+          </head>
+          <body>
+              <h1>Hello from Ansible!</h1>
+              <p>This is a simple HTML file served by Nginx.</p>
+          </body>
+          </html>
+        owner: www-data
+        group: www-data
+        mode: '0644'
